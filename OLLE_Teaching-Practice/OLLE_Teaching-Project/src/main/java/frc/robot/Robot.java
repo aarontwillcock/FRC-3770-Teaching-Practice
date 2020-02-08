@@ -8,11 +8,17 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.SPI;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -28,6 +34,8 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   DigitalInput HitSwitch;
   Relay LEDSwitch;
+  AnalogInput Pot;
+  ADXRS450_Gyro gyro;
 
   char MyCharacter;
   String Myname;
@@ -37,7 +45,11 @@ public class Robot extends TimedRobot {
   Boolean OnOff;
   Float a, b, resultF;
   Integer c, d, resultI;
-
+  Integer degree;
+  Double GyroAngle;
+  TalonSRX FR, BR;
+  TalonSRX FL, BL;
+  Joystick controller;
 
 
   /**
@@ -53,7 +65,7 @@ public class Robot extends TimedRobot {
     // MoreSigFigs = 3.1415926;
     // OnOff = true;
     // 6.02 * 10^23 = 1 mol
-    // a = (float)6.022;
+    // a = (float)6.022;p
     // // 22.4 L gas/ 1 mol
     // b = (float)22.4;
     // resultF = (float)0;
@@ -64,9 +76,19 @@ public class Robot extends TimedRobot {
     // resultI = 0;
     HitSwitch = new DigitalInput(0);
     LEDSwitch = new Relay(0);
+    Pot = new AnalogInput(0);
+    gyro = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
+    FR = new TalonSRX(1);
+    BR = new TalonSRX(4);
+    FL = new TalonSRX(3);
+    BL = new TalonSRX(2);
+    degree = 55;
+    GyroAngle = (double)7;
+    gyro.calibrate();
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+    controller = new Joystick(0);
   }
 
   /**
@@ -157,14 +179,41 @@ public class Robot extends TimedRobot {
     // for(Integer i=0; i<5; i++){
     // System.out.println("Hello");
     // }
-    if(HitSwitch.get() == true){
-      System.out.println("Go");
-      LEDSwitch.set(Relay.Value.kOff);
-    }else{
-      System.out.println("ObjectHere");
-      LEDSwitch.set(Relay.Value.kForward);
-    }
+    // if(HitSwitch.get() == true){
+    //   System.out.println("Go");
+    //   LEDSwitch.set(Relay.Value.kReverse);
+    // }else{
+    //   System.out.println("ObjectHere");
+    //   LEDSwitch.set(Relay.Value.kForward);
+    // }
+      // degree = Pot.getValue();
+      // System.out.println(degree);
+      // GyroAngle = gyro.getAngle();
+      // System.out.println(GyroAngle);
+      // Natalies motors (leftside)
+      if (controller.getRawButton(3)){
+        BL.set(ControlMode.PercentOutput,1);
+      }else{
+        BL.set(ControlMode.PercentOutput,0);
+      }
+      if (controller.getRawButton(5)){
+        FL.set(ControlMode.PercentOutput,1);
+      }else{
+        FL.set(ControlMode.PercentOutput,0);
+      }
+      // Hadens motors (rightside)
+      if (controller.getRawButton(4)){
+        BR.set(ControlMode.PercentOutput,-1);
+      }else{
+        BR.set(ControlMode.PercentOutput,0);
+      }
+      if (controller.getRawButton(6)){
+        FR.set(ControlMode.PercentOutput,-1);
+      }else{
+        FR.set(ControlMode.PercentOutput,0);
+      }
   }
+
 
   /**
    * This function is called periodically during test mode.
