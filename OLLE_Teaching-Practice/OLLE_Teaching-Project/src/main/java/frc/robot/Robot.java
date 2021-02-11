@@ -191,27 +191,44 @@ public class Robot extends TimedRobot {
       // GyroAngle = gyro.getAngle();
       // System.out.println(GyroAngle);
       // Natalies motors (leftside)
-      if (controller.getRawButton(3)){
-        BL.set(ControlMode.PercentOutput,1);
-      }else{
-        BL.set(ControlMode.PercentOutput,0);
-      }
-      if (controller.getRawButton(5)){
-        FL.set(ControlMode.PercentOutput,1);
-      }else{
-        FL.set(ControlMode.PercentOutput,0);
-      }
-      // Hadens motors (rightside)
-      if (controller.getRawButton(4)){
-        BR.set(ControlMode.PercentOutput,-1);
-      }else{
-        BR.set(ControlMode.PercentOutput,0);
-      }
-      if (controller.getRawButton(6)){
-        FR.set(ControlMode.PercentOutput,-1);
-      }else{
-        FR.set(ControlMode.PercentOutput,0);
-      }
+      // if (controller.getRawButton(3)){
+      //   BL.set(ControlMode.PercentOutput,1);
+      // }else{
+      //   BL.set(ControlMode.PercentOutput,0);
+      // }
+      // if (controller.getRawButton(5)){
+      //   FL.set(ControlMode.PercentOutput,1);
+      // }else{
+      //   FL.set(ControlMode.PercentOutput,0);
+      // }
+      // // Hadens motors (rightside)
+      // if (controller.getRawButton(4)){
+      //   BR.set(ControlMode.PercentOutput,-1);
+      // }else{
+      //   BR.set(ControlMode.PercentOutput,0);
+      // }
+      // if (controller.getRawButton(6)){
+      //   FR.set(ControlMode.PercentOutput,-1);
+      // }else{
+      //   FR.set(ControlMode.PercentOutput,0);
+     // }
+
+     //Individual motor testing
+    //  double homecoming = controller.getY();
+    //  BR.set(ControlMode.PercentOutput, homecoming);
+    double leftspeed = controller.getX()-controller.getY(); 
+    double rightspeed = controller.getX()+controller.getY();
+    if(leftspeed<0.05 && leftspeed>-0.05){
+      leftspeed=0; 
+    }
+    if(rightspeed<0.05 && rightspeed>-0.05){
+      rightspeed=0;
+    }
+    FR.set(ControlMode.PercentOutput,rightspeed);
+    BR.set(ControlMode.PercentOutput,rightspeed);
+    BL.set(ControlMode.PercentOutput,leftspeed);
+    FL.set(ControlMode.PercentOutput,leftspeed);
+    
   }
 
 
